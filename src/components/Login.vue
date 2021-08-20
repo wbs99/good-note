@@ -7,7 +7,7 @@
           <div class="form">
             <h3 @click="showRegister">创建账户</h3>
             <transition name="slide">
-              <div v-bind:class="{ show: isShowRegister }" class="register">
+              <div :class="{ show: isShowRegister }" class="register">
                 <input type="text" v-model="register.username" placeholder="用户名" />
                 <input
                   type="password"
@@ -15,13 +15,13 @@
                   @keyup.enter="onRegister"
                   placeholder="密码"
                 />
-                <p v-bind:class="{ error: register.isError }">{{ register.notice }}</p>
+                <p :class="{ error: register.isError }">{{ register.notice }}</p>
                 <div class="button" @click="onRegister">创建账号</div>
               </div>
             </transition>
             <h3 @click="showLogin">登录</h3>
             <transition name="slide">
-              <div v-bind:class="{ show: isShowLogin }" class="login">
+              <div :class="{ show: isShowLogin }" class="login">
                 <input type="text" v-model="login.username" placeholder="输入用户名" />
                 <input
                   type="password"
@@ -29,7 +29,7 @@
                   @keyup.enter="onLogin"
                   placeholder="密码"
                 />
-                <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
+                <p :class="{ error: login.isError }">{{ login.notice }}</p>
                 <div class="button" @click="onLogin">登录</div>
               </div>
             </transition>
@@ -41,6 +41,16 @@
 </template>
 
 <script>
+
+import request from '@/helpers/request'
+
+request("/auth/login", "POST", { username: "good", password: "123456" })
+  .then(
+    data => {
+      console.log(data);
+    }
+  );
+
 export default {
   data() {
     return {

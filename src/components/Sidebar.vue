@@ -1,6 +1,6 @@
 <template>
   <div id="sidebar">
-    <avatar></avatar>
+    <Avatar />
     <div class="icons">
       <router-link to="/note/1" title="笔记">
         <i class="iconfont icon-note"></i>
@@ -26,27 +26,25 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang='less' scoped>
 #sidebar {
   position: relative;
   width: 56px;
   text-align: center;
   background-color: #2c333c;
 }
-
 .icons {
   margin-top: 15px;
-}
 
-.icons a {
-  padding: 6px 0;
-  display: block;
+  a {
+    padding: 6px 0;
+    display: block;
+  }
 }
 
 .icons .router-link-active {
   background-color: #5e6266;
 }
-
 .logout {
   position: absolute;
   bottom: 20px;
@@ -54,7 +52,6 @@ export default {
   text-align: center;
   cursor: pointer;
 }
-
 .iconfont {
   color: #fff;
 }

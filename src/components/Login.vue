@@ -1,22 +1,38 @@
 <template>
   <div id="login">
-    <div class="good-overlay">
+    <div class="good-mask">
       <div class="good-wrapper">
         <div class="good-container">
           <div class="main"></div>
           <div class="form">
-            <h3>创建账户</h3>
-            <div v-show="true" class="register">
-              <input type="text" placeholder="用户名" />
-              <input type="text" placeholder="密码" />
-              <div class="button">创建账号</div>
-            </div>
-            <h3>登录</h3>
-            <div v-show="false" class="login">
-              <input type="text" placeholder="输入用用户名" />
-              <input type="text" placeholder="密码" />
-              <div class="button">登录</div>
-            </div>
+            <h3 @click="showRegister">创建账户</h3>
+            <transition name="slide">
+              <div v-bind:class="{ show: isShowRegister }" class="register">
+                <input type="text" v-model="register.username" placeholder="用户名" />
+                <input
+                  type="password"
+                  v-model="register.password"
+                  @keyup.enter="onRegister"
+                  placeholder="密码"
+                />
+                <p v-bind:class="{ error: register.isError }">{{ register.notice }}</p>
+                <div class="button" @click="onRegister">创建账号</div>
+              </div>
+            </transition>
+            <h3 @click="showLogin">登录</h3>
+            <transition name="slide">
+              <div v-bind:class="{ show: isShowLogin }" class="login">
+                <input type="text" v-model="login.username" placeholder="输入用户名" />
+                <input
+                  type="password"
+                  v-model="login.password"
+                  @keyup.enter="onLogin"
+                  placeholder="密码"
+                />
+                <p v-bind:class="{ error: login.isError }">{{ login.notice }}</p>
+                <div class="button" @click="onLogin">登录</div>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -26,17 +42,87 @@
 
 <script>
 export default {
-  name: 'Login',
   data() {
     return {
-      msg: 'This is login page'
+      isShowLogin: true,
+      isShowRegister: false,
+      login: {
+        username: '',
+        password: '',
+        notice: '输入用户名和密码',
+        isError: false
+      },
+      register: {
+        username: '',
+        password: '',
+        notice: '创建账号后，请记住用户名和密码',
+        isError: false
+      }
     }
+  },
+  methods: {
+    showLogin() {
+      this.isShowLogin = true
+      this.isShowRegister = false
+    },
+    showRegister() {
+      this.isShowLogin = false
+      this.isShowRegister = true
+    },
+    onRegister() {
+      let result = this.validUsername(this.register.username)
+      if (!result.isValid) {
+        this.register.isError = true
+        this.register.notice = result.notice
+        return
+      }
+      let result2 = this.validPassword(this.register.password)
+      if (!result2.isValid) {
+        this.register.isError = true
+        this.register.notice = result2.notice
+        return
+      }
+      this.register.isError = false
+      this.register.notice = ''
+      console.log('注册：用户名是：', this.register.username, '密码是：', this.register.password);
+    },
+    onLogin() {
+      let result3 = this.validUsername(this.login.username)
+      if (!result3.isValid) {
+        this.login.isError = true
+        this.login.notice = result3.notice
+        return
+      }
+      let result4 = this.validPassword(this.login.password)
+      if (!result4.isValid) {
+        this.login.isError = true
+        this.login.notice = result4.notice
+        return
+      }
+      this.login.isError = false
+      this.login.notice = ''
+      console.log('登录：用户名是：', this.login.username, '密码是：', this.login.password);
+    },
+    validUsername(username) {
+      return {
+        isValid: /^[\w\u4e00-\u9fa5]{3,15}$/.test(username),
+        notice: '用户名3~15个字符，仅限于字母数字下划线中文'
+      }
+    },
+    validPassword(password) {
+      return {
+        isValid: /^.{6,16}$/.test(password),
+        notice: '密码长度为6~16个字符'
+      }
+    },
   }
 }
 </script>
 
-<style lang='less' scoped>
-.good-overlay {
+
+
+<style lang="less">
+.good-mask {
   position: fixed;
   z-index: 100;
   top: 0;
@@ -54,10 +140,10 @@ export default {
 .good-container {
   width: 800px;
   height: 500px;
-  margin: 0 auto;
+  margin: 0px auto;
   background-color: #fff;
   border-radius: 2px;
-  box-shadow: 0 2px 8px rgab(0, 0, 0, 0.33);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
   display: flex;
@@ -71,8 +157,10 @@ export default {
   .form {
     width: 270px;
     border-left: 1px solid #ccc;
+    overflow: hidden;
     h3 {
       padding: 10px 20px;
+      margin-top: -1px;
       font-weight: normal;
       font-size: 16px;
       border-top: 1px solid #eee;
@@ -82,7 +170,7 @@ export default {
       }
     }
     .button {
-      background: #2bb964;
+      background-color: #2bb964;
       height: 36px;
       line-height: 36px;
       text-align: center;
@@ -92,10 +180,16 @@ export default {
       margin-top: 18px;
       cursor: pointer;
     }
-    .register,
-    .login {
-      padding: 10px 20px;
+    .login,
+    .register {
+      padding: 0px 20px;
       border-top: 1px solid #eee;
+      height: 0;
+      overflow: hidden;
+      transition: height 0.4s;
+      &.show {
+        height: 193px;
+      }
       input {
         display: block;
         width: 100%;

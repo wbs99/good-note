@@ -6,6 +6,8 @@ import axios from "axios";
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
 axios.defaults.baseURL = "http://note-server.hunger-valley.com";
+//及时存在跨域，接口处理信息的时候也会带上 cookie
+axios.defaults.withCredentials = true;
 
 export default function request(url, type = "GET", data = {}) {
   return new Promise((resolve, reject) => {

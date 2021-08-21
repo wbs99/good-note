@@ -42,10 +42,7 @@
 
 <script>
 
-import Auth from '../apis/auth'
-Auth.getInfo().then(data => {
-  console.log(data);
-})
+import Auth from '@/apis/auth'
 
 export default {
   data() {
@@ -76,57 +73,53 @@ export default {
       this.isShowRegister = true
     },
     onRegister() {
-      let result = this.validUsername(this.register.username)
-      if (!result.isValid) {
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
         this.register.isError = true
-        this.register.notice = result.notice
+        this.register.notice = '用户名3~15个字符，仅限于字母数字下划线中文'
         return
       }
-      let result2 = this.validPassword(this.register.password)
-      if (!result2.isValid) {
+      if (!/^.{6,16}$/.test(this.register.password)) {
         this.register.isError = true
-        this.register.notice = result2.notice
+        this.register.notice = '密码长度为6~16个字符'
         return
       }
-      this.register.isError = false
-      this.register.notice = ''
-      console.log('注册：用户名是：', this.register.username, '密码是：', this.register.password);
-      Auth.register({ username: "this.register.username", password: "this.register.password" }).then(data => {
-        console.log(data);
+
+      Auth.register({
+        username: this.register.username,
+        password: this.register.password
+      }).then(data => {
+        this.register.isError = false
+        this.register.notice = ''
+        this.$router.push({ path: 'notebooks' })
+      }).catch(data => {
+        this.register.isError = true
+        this.register.notice = data.msg
       })
     },
     onLogin() {
-      let result3 = this.validUsername(this.login.username)
-      if (!result3.isValid) {
+      if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.login.username)) {
         this.login.isError = true
-        this.login.notice = result3.notice
+        this.login.notice = '用户名3~15个字符，仅限于字母数字下划线中文'
         return
       }
-      let result4 = this.validPassword(this.login.password)
-      if (!result4.isValid) {
+      if (!/^.{6,16}$/.test(this.login.password)) {
         this.login.isError = true
-        this.login.notice = result4.notice
+        this.login.notice = '密码长度为6~16个字符'
         return
       }
-      this.login.isError = false
-      this.login.notice = ''
-      console.log('登录：用户名是：', this.login.username, '密码是：', this.login.password);
-      Auth.login({ username: "this.login.username", password: "this.login.password" }).then(data => {
-        console.log(data);
+
+      Auth.login({
+        username: this.login.username,
+        password: this.login.password
+      }).then(data => {
+        this.login.isError = false
+        this.login.notice = ''
+        this.$router.push({ path: 'notebooks' })
+      }).catch(data => {
+        this.login.isError = true
+        this.login.notice = data.msg
       })
-    },
-    validUsername(username) {
-      return {
-        isValid: /^[\w\u4e00-\u9fa5]{3,15}$/.test(username),
-        notice: '用户名3~15个字符，仅限于字母数字下划线中文'
-      }
-    },
-    validPassword(password) {
-      return {
-        isValid: /^.{6,16}$/.test(password),
-        notice: '密码长度为6~16个字符'
-      }
-    },
+    }
   }
 }
 </script>

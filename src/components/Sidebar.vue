@@ -26,8 +26,8 @@ export default {
   components: { Avatar },
   methods: {
     logout() {
-      console.log('退出');
       Auth.logout().then(data => {
+        this.$router.push({ path: 'login' })
         console.log(data);
       })
     }

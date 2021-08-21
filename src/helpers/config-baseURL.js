@@ -1,5 +1,3 @@
-
-  module.exports = {
-    baseURL: 'http://localhost:3000'
-  }
-  
+module.exports = {
+  baseURL: "https://note-server.hunger-valley.com"
+};

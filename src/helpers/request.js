@@ -3,9 +3,12 @@
 // 相当于
 // request("/auth/login");
 import axios from "axios";
+import baseURLConfig from "./config-baseURL";
+console.log(baseURLConfig);
+
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
-axios.defaults.baseURL = "http://note-server.hunger-valley.com";
+axios.defaults.baseURL = baseURLConfig.baseURL;
 //及时存在跨域，接口处理信息的时候也会带上 cookie
 axios.defaults.withCredentials = true;
 

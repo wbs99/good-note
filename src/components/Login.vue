@@ -42,14 +42,10 @@
 
 <script>
 
-import request from '@/helpers/request'
-
-request("/auth")
-  .then(
-    data => {
-      console.log(data);
-    }
-  );
+import Auth from '../apis/auth'
+Auth.getInfo().then(data => {
+  console.log(data);
+})
 
 export default {
   data() {
@@ -95,12 +91,9 @@ export default {
       this.register.isError = false
       this.register.notice = ''
       console.log('注册：用户名是：', this.register.username, '密码是：', this.register.password);
-      request("/auth/register", "POST", { username: "this.register.username", password: "this.register.password" })
-        .then(
-          data => {
-            console.log(data);
-          }
-        );
+      Auth.register({ username: "this.register.username", password: "this.register.password" }).then(data => {
+        console.log(data);
+      })
     },
     onLogin() {
       let result3 = this.validUsername(this.login.username)
@@ -118,12 +111,9 @@ export default {
       this.login.isError = false
       this.login.notice = ''
       console.log('登录：用户名是：', this.login.username, '密码是：', this.login.password);
-      request("/auth/login", "POST", { username: "this.login.username", password: "this.login.password" })
-        .then(
-          data => {
-            console.log(data);
-          }
-        );
+      Auth.login({ username: "this.login.username", password: "this.login.password" }).then(data => {
+        console.log(data);
+      })
     },
     validUsername(username) {
       return {

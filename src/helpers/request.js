@@ -13,7 +13,7 @@ export default function request(url, type = "GET", data = {}) {
   return new Promise((resolve, reject) => {
     let option = {
       url,
-      type,
+      method: type,
       validateStatus(status) {
         return (status >= 200 && status < 300) || status === 400;
       }

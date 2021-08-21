@@ -12,21 +12,22 @@
         <i class="iconfont icon-trash"></i>
       </router-link>
     </div>
-    <div class="logout" @click="onLogout">
-      <i class="iconfont icon-logout" @click="logout"></i>
+    <div class="logout" @click="logout">
+      <i class="iconfont icon-logout"></i>
     </div>
   </div>
 </template>
 
 <script>
 import Avatar from './Avatar.vue'
-import request from '@/helpers/request'
+import Auth from '../apis/auth'
+
 export default {
   components: { Avatar },
   methods: {
     logout() {
       console.log('退出');
-      request('auth/logout').then(data => {
+      Auth.logout().then(data => {
         console.log(data);
       })
     }

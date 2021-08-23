@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <header>
-      <a href="#">
+      <a href="#" @click="onCreate">
         <i class="iconfont icon-plus"></i>
         <span>新建笔记本</span>
       </a>
@@ -16,8 +16,8 @@
               <span>笔记本标题1</span>
             </div>
             <div class="noteactions">
-              <span class="delete">删除</span>
-              <span class="edit">编辑</span>
+              <span class="delete" @click="onDelete">删除</span>
+              <span class="edit" @click="onEdit">编辑</span>
               <span class="date">3天前</span>
             </div>
           </div>
@@ -51,10 +51,12 @@
 
 <script>
 import Auth from '../apis/auth'
+import Notebooks from '../apis/notebooks'
+
 export default {
   data() {
     return {
-      msg: '笔记本列表'
+      notebooks: []
     }
   },
   created() {
@@ -65,6 +67,17 @@ export default {
           this.$router.push({ path: '/login' })
         }
       })
+  },
+  methods: {
+    onCreate() {
+      console.log('create');
+    },
+    onEdit() {
+      console.log('edit');
+    },
+    onDelete() {
+      console.log('delete');
+    }
   }
 }
 </script>

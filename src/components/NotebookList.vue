@@ -14,7 +14,7 @@
           <router-link v-for="notebook in notebooks"
                        to="/note/1"
                        class="notelist"
-                       :key="notebook">
+                       :key="notebook.id">
             <div class="notename">
               <span class="iconfont icon-notebook"></span>
               <span>{{notebook.title}}</span>
@@ -66,9 +66,9 @@ export default {
         return
       }
       Notebooks.addNotebook({ title }).then((res) => {
-        this.notebooks.unshift(res.data)
         console.log(res)
         alert(res.msg)
+        this.notebooks.unshift(res.data)
       })
     },
     onEdit(notebook) {
@@ -82,6 +82,15 @@ export default {
     },
     onDelete(notebook) {
       console.log('delete')
+      let isConfirm = window.confirm('你确定要删除吗')
+      if (isConfirm) {
+        Notebooks.deleteNotebook(notebook.id).then((res) => {
+          console.log(res)
+          alert(res.msg)
+          //找到这个 notebook 的 index ，从 notebooks 数组里删掉
+          this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+        })
+      }
     },
   },
 }

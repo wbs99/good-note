@@ -14,11 +14,11 @@ export default {
   },
   //更新笔记本，指定更新哪一个笔记本，更新笔记本的标题等等
   updateNotebook(notebookId, { title = "" } = { title: "" }) {
-    return request(URL.UPDATE.replace(":id", notebookId), "PATH", { title });
+    return request(URL.UPDATE.replace(":id", notebookId), "PATCH", { title });
   },
   //删除笔记本
   deleteNotebook(notebookId) {
-    request(URL.DELETE.replace(":id", notebookId), "DELETE");
+    return request(URL.DELETE.replace(":id", notebookId), "DELETE");
   },
   //添加笔记本
   addNotebook({ title = "" } = { title: "" }) {

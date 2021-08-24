@@ -1,4 +1,5 @@
 import request from "../helpers/request";
+import { friendlyDate } from "../helpers/util";
 
 const URL = {
   GET: "notebooks",
@@ -10,7 +11,21 @@ const URL = {
 export default {
   //获取所有笔记本
   getAll() {
-    return request(URL.GET);
+    return new Promise((resolve, reject) => {
+      request(URL.GET)
+        .then(res => {
+          res.data = res.data.sort(
+            (notebook1, notebook2) => notebook1.createdAt < notebook2.createdAt
+          );
+          res.data.forEach(notebook => {
+            notebook.friendlyCreatedAt = friendlyDate(notebook.createdAt);
+          });
+          resolve(res);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   },
   //更新笔记本，指定更新哪一个笔记本，更新笔记本的标题等等
   updateNotebook(notebookId, { title = "" } = { title: "" }) {

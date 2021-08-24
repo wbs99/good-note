@@ -1,48 +1,33 @@
 <template>
   <div class="container">
     <header>
-      <a href="#" @click="onCreate">
+      <a href="#"
+         @click.stop.prevent="onCreate">
         <i class="iconfont icon-plus"></i>
         <span>新建笔记本</span>
       </a>
     </header>
     <main>
       <div class="main-container">
-        <h4>笔记本列表(10)</h4>
+        <h4>笔记本列表({{ notebooks.length }})</h4>
         <div class="list-wrapper">
-          <div class="notelist">
+          <router-link v-for="notebook in notebooks"
+                       to="/note/1"
+                       class="notelist"
+                       :key="notebook">
             <div class="notename">
               <span class="iconfont icon-notebook"></span>
-              <span>笔记本标题1</span>
+              <span>{{notebook.title}}</span>
+              <span>{{notebook.noteCounts}}</span>
             </div>
             <div class="noteactions">
-              <span class="delete" @click="onDelete">删除</span>
-              <span class="edit" @click="onEdit">编辑</span>
+              <span class="delete"
+                    @click.stop.prevent="onDelete(notebook)">删除</span>
+              <span class="edit"
+                    @click.stop.prevent="onEdit(notebook)">编辑</span>
               <span class="date">3天前</span>
             </div>
-          </div>
-          <div class="notelist">
-            <div class="notename">
-              <i class="iconfont icon-notebook"></i>
-              <span>笔记本标题1</span>
-            </div>
-            <div class="noteactions">
-              <span class="delete">删除</span>
-              <span class="edit">编辑</span>
-              <span class="date">3天前</span>
-            </div>
-          </div>
-          <div class="notelist">
-            <div class="notename">
-              <span class="iconfont icon-notebook"></span>
-              <span>笔记本标题1</span>
-            </div>
-            <div class="noteactions">
-              <span class="delete">删除</span>
-              <span class="edit">编辑</span>
-              <span class="date">3天前</span>
-            </div>
-          </div>
+          </router-link>
         </div>
       </div>
     </main>
@@ -51,34 +36,54 @@
 
 <script>
 import Auth from '../apis/auth'
+import notebooks from '../apis/notebooks'
 import Notebooks from '../apis/notebooks'
+//window.Notebooks = Notebooks
 
 export default {
   data() {
     return {
-      notebooks: []
+      notebooks: [],
     }
   },
   created() {
     //获取用户信息，未登录跳转到登录页
-    Auth.getInfo()
-      .then(res => {
-        if (!res.isLogin) {
-          this.$router.push({ path: '/login' })
-        }
-      })
+    Auth.getInfo().then((res) => {
+      if (!res.isLogin) {
+        this.$router.push({ path: '/login' })
+      }
+    })
+    Notebooks.getAll().then((res) => {
+      this.notebooks = res.data
+    })
   },
   methods: {
     onCreate() {
-      console.log('create');
+      let title = window.prompt('创建笔记本')
+      if (title.trim() === '') {
+        //清除title 两边的空字符串，清除完如果是空，就代表笔记本名字是空，给出提示信息
+        alert('笔记本名不能为空')
+        return
+      }
+      Notebooks.addNotebook({ title }).then((res) => {
+        this.notebooks.unshift(res.data)
+        console.log(res)
+        alert(res.msg)
+      })
     },
-    onEdit() {
-      console.log('edit');
+    onEdit(notebook) {
+      console.log('edit')
+      let title = window.prompt('修改标题', notebook.title)
+      Notebooks.updateNotebook(notebook.id, { title }).then((res) => {
+        console.log(res)
+        alert(res.msg)
+        notebook.title = title
+      })
     },
-    onDelete() {
-      console.log('delete');
-    }
-  }
+    onDelete(notebook) {
+      console.log('delete')
+    },
+  },
 }
 </script>
 

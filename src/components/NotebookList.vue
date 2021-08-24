@@ -12,7 +12,7 @@
         <h4>笔记本列表({{ notebooks.length }})</h4>
         <div class="list-wrapper">
           <router-link v-for="notebook in notebooks"
-                       to="/note/1"
+                       :to="`/note?notebookId=${notebook.id}`"
                        class="notelist"
                        :key="notebook.id">
             <div class="notename">

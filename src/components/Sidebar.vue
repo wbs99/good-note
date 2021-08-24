@@ -2,17 +2,21 @@
   <div id="sidebar">
     <Avatar />
     <div class="icons">
-      <router-link to="/note/1" title="笔记">
+      <router-link to="/note"
+                   title="笔记">
         <i class="iconfont icon-note"></i>
       </router-link>
-      <router-link to="/notebooks" title="笔记本">
+      <router-link to="/notebooks"
+                   title="笔记本">
         <i class="iconfont icon-notebook"></i>
       </router-link>
-      <router-link to="/trash/2" title="回收站">
+      <router-link to="/trash"
+                   title="回收站">
         <i class="iconfont icon-trash"></i>
       </router-link>
     </div>
-    <div class="logout" @click="logout">
+    <div class="logout"
+         @click="logout">
       <i class="iconfont icon-logout"></i>
     </div>
   </div>
@@ -26,14 +30,13 @@ export default {
   components: { Avatar },
   methods: {
     logout() {
-      Auth.logout().then(data => {
+      Auth.logout().then((data) => {
         this.$router.push({ path: 'login' })
-        console.log(data);
+        console.log(data)
       })
-    }
-  }
+    },
+  },
 }
-
 </script>
 
 <style lang='less' scoped>

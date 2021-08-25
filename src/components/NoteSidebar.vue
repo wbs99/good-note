@@ -6,7 +6,7 @@
                  @command="handleCommand"
                  placement="bottom">
       <span class="el-dropdown-link">
-        {{currentNotebook.title}} <i class="iconfont icon-down"></i>
+        {{curBook.title}} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item v-for="notebook in notebooks"
@@ -22,7 +22,7 @@
     <ul class="notes">
       <li v-for="note in notes"
           :key="note.id">
-        <router-link :to="`/note?noteId=${note.id}&notebookId=${currentNotebook.id}`">
+        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{note.updatedAtFriendly}}</span>
           <span class="title">{{note.title}}</span>
         </router-link>
@@ -41,13 +41,13 @@ export default {
     Notebooks.getAll()
       .then((res) => {
         this.notebooks = res.data
-        this.currentNotebook =
+        this.curBook =
           this.notebooks.find(
             (notebook) => notebook.id == this.$route.query.notebookId
           ) ||
           this.notebooks[0] ||
           {}
-        return Notes.getAll({ notebookId: this.currentNotebook.id })
+        return Notes.getAll({ notebookId: this.curBook.id })
       })
       .then((res) => {
         this.notes = res.data
@@ -60,7 +60,7 @@ export default {
     return {
       notebooks: [],
       notes: [],
-      currentNotebook: {},
+      curBook: {},
     }
   },
 
@@ -69,8 +69,7 @@ export default {
       if (notebookId == 'trash') {
         return this.$router.push({ path: '/trash' })
       }
-      //下拉菜单中点击的是哪个笔记本，就显示哪个笔记本
-      this.currentNotebook = this.notebooks.find(
+      this.curBook = this.notebooks.find(
         (notebook) => notebook.id == notebookId
       )
       Notes.getAll({ notebookId }).then((res) => {
@@ -80,7 +79,7 @@ export default {
     },
 
     addNote() {
-      Notes.addNote({ notebookId: this.currentNotebook.id }).then((res) => {
+      Notes.addNote({ notebookId: this.curBook.id }).then((res) => {
         console.log(res)
         this.notes.unshift(res.data)
       })
@@ -88,6 +87,8 @@ export default {
   },
 }
 </script>
+
+
 <style lang="less">
 .note-sidebar {
   height: 100vh;

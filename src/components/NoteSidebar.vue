@@ -1,69 +1,89 @@
-<template >
+<template>
   <div class="note-sidebar">
-    <span class="btn add-note">添加笔记</span>
+    <span class="btn add-note"
+          @click="addNote">添加笔记</span>
     <el-dropdown class="notebook-title"
-                 placement='bottom'
-                 @command="handleCommand">
+                 @command="handleCommand"
+                 placement="bottom">
       <span class="el-dropdown-link">
-        我的笔记本1<i class="iconfont icon-down"></i>
+        {{currentNotebook.title}} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item v-for="notebook in notebooks"
                           :key="notebook.id"
                           :command="notebook.id">{{notebook.title}}</el-dropdown-item>
-        <el-dropdown-item command='trash'>回收站</el-dropdown-item>
+        <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <div class="menu">
-      <div>更新事件</div>
+      <div>更新时间</div>
       <div>标题</div>
     </div>
     <ul class="notes">
       <li v-for="note in notes"
           :key="note.id">
-        <router-link :to="`/note?noteId=${note.id}`">
-          <span class="date">{{note.updateAtFriendly}}</span>
+        <router-link :to="`/note?noteId=${note.id}&notebookId=${currentNotebook.id}`">
+          <span class="date">{{note.updatedAtFriendly}}</span>
           <span class="title">{{note.title}}</span>
         </router-link>
       </li>
     </ul>
   </div>
 </template>
+
 <script>
-import Notebooks from '../apis/notebooks'
-import Notes from '../apis/notes'
-window.Notes = Notes
+import Notebooks from '@/apis/notebooks'
+import Notes from '@/apis/notes'
+import Bus from '@/helpers/bus'
 
 export default {
   created() {
-    Notebooks.getAll().then((res) => {
-      this.notebooks = res.data
-    })
+    Notebooks.getAll()
+      .then((res) => {
+        this.notebooks = res.data
+        this.currentNotebook =
+          this.notebooks.find(
+            (notebook) => notebook.id == this.$route.query.notebookId
+          ) ||
+          this.notebooks[0] ||
+          {}
+        return Notes.getAll({ notebookId: this.currentNotebook.id })
+      })
+      .then((res) => {
+        this.notes = res.data
+        this.$emit('update:notes', this.notes)
+        Bus.$emit('update:notes', this.notes)
+      })
   },
+
   data() {
     return {
       notebooks: [],
-      notes: [
-        {
-          id: 1,
-          title: '第1个笔记',
-          updateAtFriendly: '刚刚',
-        },
-        {
-          id: 2,
-          title: '第2个笔记',
-          updateAtFriendly: '刚刚',
-        },
-      ],
+      notes: [],
+      currentNotebook: {},
     }
   },
+
   methods: {
     handleCommand(notebookId) {
-      if (notebookId !== 'trash') {
-        Notes.getAll({ notebookId }).then((res) => {
-          this.notes = res.data
-        })
+      if (notebookId == 'trash') {
+        return this.$router.push({ path: '/trash' })
       }
+      //下拉菜单中点击的是哪个笔记本，就显示哪个笔记本
+      this.currentNotebook = this.notebooks.find(
+        (notebook) => notebook.id == notebookId
+      )
+      Notes.getAll({ notebookId }).then((res) => {
+        this.notes = res.data
+        this.$emit('update:notes', this.notes)
+      })
+    },
+
+    addNote() {
+      Notes.addNote({ notebookId: this.currentNotebook.id }).then((res) => {
+        console.log(res)
+        this.notes.unshift(res.data)
+      })
     },
   },
 }

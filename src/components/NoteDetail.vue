@@ -2,9 +2,27 @@
   <div id="note"
        class="detail">
     <NoteSidebar />
-    <div id="note-detail">
-      <!-- <h1>{{ notebookId }}:{{ $route.query.notebookId }}</h1>
-      <h1>{{ noteId }}:{{ $route.query.noteId }}</h1> -->
+    <div class="note-detail">
+      <div class="note-bar">
+        <span>创建日期：{{currentNotebook.createdAtFriendly}}</span>
+        <span>更新日期：{{currentNotebook.updatedAtFriendly}}</span>
+        <span>{{currentNotebook.statusText}}</span>
+        <span class="iconfont icon-delete"></span>
+        <span class="iconfont icon-fullscreen"></span>
+      </div>
+      <div class="note-title">
+        <input type="text"
+               :value="currentNotebook.title"
+               placeholder="输入标题">
+      </div>
+      <div class="editor">
+        <textarea v-show="true"
+                  :value='currentNotebook.content'
+                  placeholder="输入内容，支持 markdown 语法"></textarea>
+        <div class="preview markdown-body"
+             v-html="''"
+             v-show="false"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -19,7 +37,13 @@ export default {
   },
   data() {
     return {
-      msg: 'notebookId',
+      currentNotebook: {
+        title: '我的笔记',
+        content: '我的笔记内容',
+        createdAtFriendly: '1 天前',
+        updatedAtFriendly: '刚刚',
+        statusText: '未更新',
+      },
     }
   },
   created() {
@@ -51,6 +75,7 @@ export default {
   }
 
   .note-bar {
+    width: 82vw;
     padding: 4px 20px;
     border-bottom: 1px solid #eee;
     &:after {

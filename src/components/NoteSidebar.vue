@@ -58,8 +58,12 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
-      this.$message('click on item ' + command)
+    handleCommand(notebookId) {
+      if (notebookId !== 'trash') {
+        Notes.getAll({ notebookId }).then((res) => {
+          this.notes = res.data
+        })
+      }
     },
   },
 }

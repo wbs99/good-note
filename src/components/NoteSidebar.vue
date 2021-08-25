@@ -30,19 +30,19 @@
   </div>
 </template>
 <script>
+import Notebooks from '../apis/notebooks'
+import Notes from '../apis/notes'
+window.Notes = Notes
+
 export default {
+  created() {
+    Notebooks.getAll().then((res) => {
+      this.notebooks = res.data
+    })
+  },
   data() {
     return {
-      notebooks: [
-        {
-          id: 1,
-          title: 'hello',
-        },
-        {
-          id: 2,
-          title: 'good',
-        },
-      ],
+      notebooks: [],
       notes: [
         {
           id: 1,
